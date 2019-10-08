@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title><ui:insert name="titulo">Trabalho DAW</ui:insert></title>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+        <h:outputScript library="js" name="scripts.js"/>
+    </h:head>
+    <h:body>
+        <h:form id="formMenu" prependId="false">
+            <p:megaMenu>
+                <p:menuitem value="Início"
+                            url="#{facesContext.externalContext.requestContextPath}/index.xhtml"
+                            icon="pi pi-home"/>
+                <p:submenu label="Cadastros">
+                    <p:column>
+                        <p:submenu label="Trabalho">
+                            <p:menuitem action="#{controleLocatorio.listar()}"
+                                        value="Locatarios"
+                                        ajax="false"/>
+                            <p:menuitem action="#{controleAluguel.listar()}"
+                                        value="Alugueis"
+                                        ajax="false"/>
+                             <p:menuitem action="#{controleCondominio.listar()}"
+                                        value="Condominios"
+                                        ajax="false"/>
+                             <p:menuitem action="#{controleUnidadeCondominial.listar()}"
+                                        value="Unidade Condominial"
+                                        ajax="false"/>
+                             <p:menuitem action="#{controleMensalidades.listar()}"
+                                        value="Mensalidades"
+                                        ajax="false"/>
+                             <p:menuitem action="#{controlePessoa.listar()}"
+                                        value="Pessoas"
+                                        ajax="false"/>
+                             <p:menuitem action="#{controleRecurso.listar()}"
+                                        value="Recursos"
+                                        ajax="false"/>
+                        </p:submenu>
+                    </p:column>
+                </p:submenu>                
+            </p:megaMenu>
+        </h:form>
+        <ui:insert name="conteudo">
+            Aqui vai o conteudo das paginas
+        </ui:insert>
+        <ui:include src="ajaxstatus.xhtml"/>
+    </h:body>
+</html>
+

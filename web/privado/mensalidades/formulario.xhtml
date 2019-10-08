@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">Edição de Mensalidades</ui:define>
+        <ui:define name="conteudo">
+            <h:form prependId="false">
+                <p:growl/>
+                <div align="center">
+                    <p:panelGrid columns="2">
+                        <f:facet name="header">
+                            <p:outputLabel value="Edição de Mensalidadess"/>
+                        </f:facet>
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton value="Cancelar"
+                                                 ajax="false" immediate="true"
+                                                 action="#{controleMensalidades.cancelar()}"/>
+                                <p:commandButton value="Salvar"
+                                                 ajax="false"
+                                                 action="#{controleMensalidades.salvar()}"
+                                                 icon="pi pi-save"/>                                                 
+                            </div>
+                        </f:facet>
+                        <p:outputLabel value="ID"/>
+                        <p:inputText value="#{controleMensalidades.objeto.id}" readonly="true" size="5"/>
+                        <p:outputLabel value="valor" for="txtValor" />
+                        <p:inputText id="txtValor" value="#{controleMensalidades.objeto.valor}"
+                                     size="50" maxlength="50" placeholder="Obrigatorio"/>
+                        <p:outputLabel value="vencimento" for="txtVencimento"/>
+                        <p:inputText id="txtVencimento" value="#{controleMensalidades.objeto.vencimento}"
+                                     size="50" maxlength="50"/> 
+                        <p:outputLabel value="valorPagamento" for="txtValorPagamento"/>
+                        <p:inputText id="txtValorPagamento" value="#{controleMensalidades.objeto.valorPagamento}"
+                                    size="50" maxlength="50" /> 
+                        <p:outputLabel value="dataPagamento" for="txtDataPagamento"/>
+                        <p:inputText id="txtDataPagamento" value="#{controleMensalidades.objeto.dataPagamento}"
+                                    size="50" maxlength="50" /> 
+                        <p:outputLabel value="Aluguel" for="selectAluguel"/>
+                        <p:selectOneMenu id="selectAluguel" value="#{controleMensalidades.objeto.aluguel}"
+                                         filter="true" filterMatchMode="starWitc">
+                        <f:converter converterId="converterAluguel"/>
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione um registro"/>
+                        <f:selectItems value="#{controleAluguel.daoAluguel.listaTodos}"
+                                      var="p" itemLabel="#{p.valor}"/>
+                        </p:selectOneMenu>
+                       
+                    </p:panelGrid>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+
