@@ -5,65 +5,141 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <ui:composition template="/templates/template.xhtml">
-        <ui:define name="titulo">Edição de Aluguel</ui:define>
-        <ui:define name="conteudo">
-            <h:form prependId="false">
-                <p:growl/>
-                <div align="center">
-                    <p:panelGrid columns="2">
+    <p:dialog header="Edição" widgetVar="dlg" resizable="false"
+              modal="true" width="50%" height="100%" position="top">
+        <h:form id="formEdicao" prependId="false">
+            <p:growl id="growl"/>
+            <p:tabView id="tab" prependId="false">
+                <p:tab title="Manutenção de alugueis">
+                    <div align="center">
+                        <p:panelGrid columns="2">
+
+                            <p:outputLabel value="ID"/>
+                            <p:inputText value="#{controleAluguel.objeto.id}" readonly="true" size="5"/>
+                            <p:outputLabel value="valor" for="txtValor" />
+                            <p:inputText id="txtValor" value="#{controleAluguel.objeto.valor}"
+                                         size="50" maxlength="50" placeholder="Obrigatorio"/>
+                            <p:outputLabel value="Inicio Contrato" for="txtInicioContrato"/>
+                            <p:calendar id="txtInicioContrato" value="#{controleAluguel.objeto.inicioContrato}"
+                                        mask="true" pattern="dd/MM/yyyy" navigator="true">
+                                <f:converter converterId="converterCalendar"/>
+                            </p:calendar>
+                            <p:outputLabel value="Fim Contrato" for="txtFimContrato"/>
+                            <p:calendar id="txtFimContrato" value="#{controleAluguel.objeto.fimContrato}"
+                                        mask="true" pattern="dd/MM/yyyy" navigator="true">
+                                <f:converter converterId="converterCalendar"/>
+                            </p:calendar>
+                            <p:outputLabel value="Dia Vencimento" for="txtDiaVencimento"/>
+                            <p:inputText id="txtDiaVencimento" value="#{controleAluguel.objeto.diaVencimento}"
+                                         size="10" maxlength="10"/> 
+                            <p:outputLabel value="Locatario" for="selectLocatario"/>
+                            <p:selectOneMenu id="selectLocatario" value="#{controleAluguel.locatario.nome}"
+                                             filter="true" filterMatchMode="startsWith">
+                                <f:converter converterId="converterLocatario"/>
+                                <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                                <f:selectItems value="#{controleAluguel.daoLocatario.listaTodos}"
+                                               var="loc" itemLabel="#{loc.nome}"/>
+                            </p:selectOneMenu> 
+                            <p:outputLabel value="Unidade Condominial" for="selectUnidade"/>
+                            <p:selectOneMenu id="selectUnidade" value="#{controleAluguel.unidadeCondominial.descricao}"
+                                             filter="true" filterMatchMode="startsWith">
+                                <f:converter converterId="converterUnidadeCondominial"/>
+                                <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                                <f:selectItems value="#{controleAluguel.daoUnidadeCondominial.listaTodos}"
+                                               var="uni" itemLabel="#{uni.descricao}"/>
+                            </p:selectOneMenu> 
+
+                        </p:panelGrid>
+                    </div>                    
+                </p:tab>
+                <p:tab title="Mensalidades">
+                    <p:dataTable value="#{controleAluguel.objeto.mensalidades}" var="men"
+                                 rowIndexVar="idx" id="listaMensalidades">
                         <f:facet name="header">
-                            <p:outputLabel value="Edição de Aluguel"/>
+                            <p:commandButton value="Novo Mensalidades"
+                                             actionListener="#{controleAluguel.novaMensalidade()}"
+                                             update="formMensalidade" icon="pi pi-plus"
+                                             oncomplete="PF('dlgMensalidade').show();"
+                                             process="@this"/>
                         </f:facet>
-                        <f:facet name="footer">
+                        <p:column headerText="Valor">
+                            <p:outputLabel value="#{men.valor}"/>
+                        </p:column>
+                        <p:column headerText="Vencimento">
+                            <p:outputLabel value="#{men.vencimento}"/>
+                        </p:column>                        
+                        <p:column headerText="Valor Pagamento">
+                            <p:outputLabel value="#{men.valorPagamento}"/>
+                        </p:column>        
+                        <p:column headerText="Data Pagamento">
+                            <p:outputLabel value="#{men.dataPagamento}"/>
+                        </p:column>       
+
+                        <p:column headerText="Ações">
                             <div align="center">
-                                <p:commandButton value="Cancelar"
-                                                 ajax="false" immediate="true"
-                                                 action="#{controleAluguel.cancelar()}"/>
-                                <p:commandButton value="Salvar"
-                                                 ajax="false"
-                                                 action="#{controleAluguel.salvar()}"
-                                                 icon="pi pi-save"/>                                                 
+                                <p:commandButton icon="pi pi-pencil"
+                                                 actionListener="#{controleAluguel.alterarMensalidade(idx)}"
+                                                 update="formMensalidade" process="@this"
+                                                 oncomplete="PF('dlgUnidade').show();"/>
+                                <p:commandButton icon="pi pi-trash"
+                                                 actionListener="#{controleAluguel.removerMensalidade(idx)}"
+                                                 update="listaMensalidade" process="@this"
+                                                 onclick="if (!confirm('Confirma a exclusão?'))
+                                                             return false"/>
                             </div>
-                        </f:facet>
-                        <p:outputLabel value="ID"/>
-                        <p:inputText value="#{controleAluguel.objeto.id}" readonly="true" size="5"/>
-                        <p:outputLabel value="valor" for="txtValor" />
-                        <p:inputText id="txtValor" value="#{controleAluguel.objeto.valor}"
-                                     size="50" maxlength="50" placeholder="Obrigatorio"/>
-                        <p:outputLabel value="inicio_contrato" for="txtInicioContrato"/>
-                        <p:inputText id="txtInicioContrato" value="#{controleAluguel.objeto.inicioContrato}"
-                                     type="date"/> 
-                        <p:outputLabel value="fim_contrato" for="txtFimContrato"/>
-                        <p:calendar id="txtFimContrato" value="#{controleOrdemServico.objeto.fimContrato}"
-			mask="true" pattern="dd/MM/yyyy" navigator="true" size="10">
-                	<f:converter converterId="converterCalendar"/>
-                        </p:calendar>  
-                        <p:outputLabel value="dia_vencimento" for="txtDiaVencimento"/>
-                        <p:inputText id="txtDiaVencimento" value="#{controleAluguel.objeto.diaVencimento}"
-                                     size="10" maxlength="10"/> 
-                        <p:outputLabel value="UnidadeCondominial" for="selectUnidadeCondominial"/>
-                        <p:selectOneMenu id="selectUnidadeCondominial" value="#{controleAluguel.objeto.unidadeCondominial}"
-                                         filter="true" filterMatchMode="starWitc">
-                        <f:converter converterId="converterUnidadeCondominial"/>
-                        <f:selectItem noSelectionOption="true"
-                                      itemLabel="Selecione um registro"/>
-                        <f:selectItems value="#{controleAluguel.daoUnidadeCondominial.listaTodos}"
-                                      var="p" itemLabel="#{p.descricao}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="Locatorio" for="selectLocatorio"/>
-                        <p:selectOneMenu id="selectLocatorio" value="#{controleAluguel.objeto.locatorio}"
-                                         filter="true" filterMatchMode="starWitc">
-                        <f:converter converterId="converterLocatorio"/>
-                        <f:selectItem noSelectionOption="true"
-                                      itemLabel="Selecione um registro"/>
-                        <f:selectItems value="#{controleAluguel.daoLocatorio.listaTodos}"
-                                      var="p" itemLabel="#{p.localTrabalho}"/>
-                        </p:selectOneMenu>
-                    </p:panelGrid>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+            </p:tabView>
+
+            <p:panel>
+                <div align="center">
+                    <p:commandButton value="Salvar" icon="pi pi-save"
+                                     actionListener="#{controleAluguel.salvar()}"
+                                     oncomplete="if(!args.validationFailed){PF('dlg').hide();}"
+                                     update="formEdicao formListagem"
+
+                                     id="btnSalvar"/>
                 </div>
-            </h:form>
-        </ui:define>
-    </ui:composition>
+            </p:panel>
+            <ui:include src="/templates/ajaxstatus.xhtml"/>
+        </h:form>
+    </p:dialog>
+    <p:dialog header="Edição de Mensalidades" widgetVar="dlgMensalidade" modal="true"
+              resizable="false">
+        <h:form id="formMensalidade" prependId="false">
+            <p:growl/>
+            <p:panelGrid columns="2">
+                <f:facet name="footer">
+                    <div align="center">
+                        <p:commandButton value="Salvar Mensalidade"
+                                         actionListener="#{controleAluguel.salvarMensalidade()}"
+                                         icon="pi pi-save" process="@form"
+                                         update="formMensalidade listaMensalidades"
+                                         oncomplete="if(!args.validationFailed){PF('dlgMensalidade').hide();}"/>                                         
+                    </div>
+                </f:facet>
+                <p:outputLabel value="Valor" for="txtValor1"/>
+                <p:inputText id="txtValor1" value="#{controleAluguel.mensalidades.valor}"
+                             size="50" maxlength="50" placeholder="Obrigatório"/>
+                <p:outputLabel value="Vencimento" for="txtVencimento"/>
+                <p:calendar id="txtVencimento" value="#{controleAluguel.mensalidades.vencimento}"
+                            mask="true" pattern="dd/MM/yyyy" navigator="true">
+                    <f:converter converterId="converterCalendar"/>
+                </p:calendar> 
+                <p:outputLabel value="Valor Pagamento" for="txtValorPagamento"/>
+                <p:inputText id="txtValorPagamento" value="#{controleAluguel.mensalidades.valorPagamento}"
+                             size="50" maxlength="50" placeholder="Obrigatório"/>
+                <p:outputLabel value="Data Pagamento" for="txtDataPagamento"/>
+                <p:calendar id="txtDataPagamento" value="#{controleAluguel.mensalidades.dataPagamento}"
+                            mask="true" pattern="dd/MM/yyyy" navigator="true">
+                    <f:converter converterId="converterCalendar"/>
+                </p:calendar> 
+
+
+            </p:panelGrid>                                
+        </h:form>
+    </p:dialog>
 </html>
 

@@ -1,20 +1,21 @@
 package converters;
 
 import jpa.EntityManagerUtil;
+import modelo.Condominio;
 import java.io.Serializable;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import modelo.Locatorio;
 
 /**
  *
- * @author Tiago
+ * @author Prof. Me. Jorge Luis Boeira Bavaresco
+ * @email jorge.bavaresco@passofundo.ifsul.edu.br
+ * @organization IFSUL - Campus Passo Fundo
  */
-
-@FacesConverter(value = "converterLocatorio")
-public class ConverterLocatorio implements Serializable, Converter{
+@FacesConverter(value = "converterCondominio")
+public class ConverterCondominio implements Serializable, Converter{
 
     // converte da tela para o controle
     @Override
@@ -22,7 +23,7 @@ public class ConverterLocatorio implements Serializable, Converter{
         if (string == null || string.equals("Selecione um registro")){
             return null;
         }
-        return EntityManagerUtil.getEntityManager().find(Locatorio.class, Integer.parseInt(string));
+        return EntityManagerUtil.getEntityManager().find(Condominio.class, Integer.parseInt(string));
     }
 
     // converte do objeto para a tela
@@ -31,7 +32,7 @@ public class ConverterLocatorio implements Serializable, Converter{
         if (o == null){
             return null;
         }
-        Locatorio obj = (Locatorio) o;
+        Condominio obj = (Condominio) o;
         return obj.getId().toString();
     }
 

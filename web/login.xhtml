@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+        
+        <ui:define name="titulo">
+            Login de Usuário
+        </ui:define>
+        
+        <ui:define name="conteudo">
+            <div align="center">
+                <h:form rendered="#{controleLogin.usuarioLogado == null}">
+                    <p:growl/>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Nome de usuário" for="txtNomeUsuario"/>
+                        <p:inputText value="#{controleLogin.usuario}" id="txtNomeUsuario"
+                                     placeholder="Obrigatório"
+                                     required="true"
+                                     requiredMessage="Informe o nome de usuário"/>
+                        <p:outputLabel value="Senha:" for="txtSenha"/>
+                        <p:password id="txtSenha"
+                                    value="#{controleLogin.senha}"
+                                    required="true"
+                                    requiredMessage="Informe a senha"
+                                    feedback="false"
+                                    placeholder="Obrigatório"/>
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton action="#{controleLogin.login()}"
+                                                 value="Efetuar Login"
+                                                 ajax="false"/>
+                            </div>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </div>
+        </ui:define>
+        
+    </ui:composition>
+</html>
+

@@ -1,11 +1,11 @@
 package controle;
 
-import dao.LocatorioDAO;
+import dao.LocatarioDAO;
 import util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import modelo.Locatorio;
+import modelo.Locatario;
 
 /**
  *
@@ -14,13 +14,13 @@ import modelo.Locatorio;
 
 @ManagedBean(name = "controleLocatorio")
 @SessionScoped
-public class ControleLocatorio implements Serializable {
+public class ControleLocatario implements Serializable {
     
-    private LocatorioDAO<Locatorio> dao;
-    private Locatorio objeto;
+    private LocatarioDAO<Locatario> dao;
+    private Locatario objeto;
     
-    public ControleLocatorio(){
-        dao = new LocatorioDAO<>();
+    public ControleLocatario(){
+        dao = new LocatarioDAO<>();
     }
     
     public String listar(){
@@ -28,7 +28,7 @@ public class ControleLocatorio implements Serializable {
     }
     
     public String novo(){
-        objeto = new Locatorio();
+        objeto = new Locatario();
         return "formulario?faces-redirect=true";
     }
     
@@ -66,19 +66,19 @@ public class ControleLocatorio implements Serializable {
         }
     }
     
-    public LocatorioDAO<Locatorio> getDao() {
+    public LocatarioDAO<Locatario> getDao() {
         return dao;
     }
 
-    public void setDao(LocatorioDAO<Locatorio> dao) {
+    public void setDao(LocatarioDAO<Locatario> dao) {
         this.dao = dao;
     }
 
-    public Locatorio getObjeto() {
+    public Locatario getObjeto() {
         return objeto;
     }
 
-    public void setObjeto(Locatorio objeto) {
+    public void setObjeto(Locatario objeto) {
         this.objeto = objeto;
     }
 

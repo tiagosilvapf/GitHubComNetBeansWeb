@@ -18,3 +18,5 @@ public class CondominioDAO<TIPO> extends DAOGenerico<Condominio> implements Seri
     }
 
 }
+
+

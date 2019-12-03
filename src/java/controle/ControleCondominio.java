@@ -1,11 +1,15 @@
 package controle;
 
 import dao.CondominioDAO;
+import dao.PessoaDAO;
 import util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import modelo.Condominio;
+import modelo.Pessoa;
+import modelo.UnidadeCondominial;
 
 /**
  *
@@ -14,25 +18,31 @@ import modelo.Condominio;
 
 @ManagedBean(name = "controleCondominio")
 @SessionScoped
+@ViewScoped
 public class ControleCondominio implements Serializable {
     
     private CondominioDAO<Condominio> dao;
+    private PessoaDAO<Pessoa> daoPessoa;
     private Condominio objeto;
+    private UnidadeCondominial unidadeCondominial;
+    private Boolean novaUnidade;
     
     public ControleCondominio(){
         dao = new CondominioDAO<>();
+         daoPessoa = new PessoaDAO<>();
     }
     
     public String listar(){
         return "/privado/condominio/listar?faces-redirect=true";
     }
     
-    public String novo(){
+    public void novo(){
         objeto = new Condominio();
-        return "formulario?faces-redirect=true";
+   
     }
     
-    public String salvar(){
+   
+       public void salvar(){
         boolean persistiu;
         if (objeto.getId() == null){
             persistiu = dao.persist(objeto);
@@ -41,21 +51,22 @@ public class ControleCondominio implements Serializable {
         }
         if (persistiu){
             Util.mensagemInformacao(dao.getMensagem());
-            return "listar?faces-redirect=true";
         } else {
             Util.mensagemErro(dao.getMensagem());
-            return "formulario?faces-redirect=true";
         }
     }
+    
     
     public String cancelar(){
         return "listar?faces-redirect=true";
     }
     
-    public String editar(Object id){
+   
+    
+     public void editar(Object id){
         objeto = dao.localizar(id);
-        return "formulario?faces-redirect=true";
     }
+  
     
     public void remover(Object id){
         objeto = dao.localizar(id);
@@ -64,6 +75,30 @@ public class ControleCondominio implements Serializable {
         } else {
             Util.mensagemErro(dao.getMensagem());
         }
+    }
+    
+     public void novaUnidade(){
+        setUnidadeCondominial(new UnidadeCondominial());
+        setNovaUnidade((Boolean) true);
+    }
+     
+
+    
+    public void alterarUnidade(int index){
+        setUnidadeCondominial(objeto.getUnidade().get(index));
+        setNovaUnidade((Boolean) false);
+    }
+    
+    public void salvarUnidade(){
+        if (getNovaUnidade()){
+            objeto.adicionarUnidade(getUnidadeCondominial());
+        }
+        Util.mensagemInformacao("Unidade condominial adicionada com sucesso!");
+    }
+    
+    public void removerUnidade(int index){
+        objeto.removerUnidade(index);
+        Util.mensagemInformacao("Unidade condominial removida com sucesso!");
     }
     
     public CondominioDAO<Condominio> getDao() {
@@ -81,5 +116,30 @@ public class ControleCondominio implements Serializable {
     public void setObjeto(Condominio objeto) {
         this.objeto = objeto;
     }
+
+    public UnidadeCondominial getUnidadeCondominial() {
+        return unidadeCondominial;
+    }
+
+    public void setUnidadeCondominial(UnidadeCondominial UnidadeCondominial) {
+        this.unidadeCondominial = UnidadeCondominial;
+    }
+
+    public Boolean getNovaUnidade() {
+        return novaUnidade;
+    }
+
+    public void setNovaUnidade(Boolean novaUnidade) {
+        this.novaUnidade = novaUnidade;
+    }
+
+    public PessoaDAO<Pessoa> getDaoPessoa() {
+        return daoPessoa;
+    }
+
+    public void setDaoPessoa(PessoaDAO<Pessoa> daoPessoa) {
+        this.daoPessoa = daoPessoa;
+    }
+    
 
 }

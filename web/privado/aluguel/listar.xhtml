@@ -5,16 +5,57 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <ui:composition template="/templates/template.xhtml">
-        <ui:define name="titulo">CRUD de Alugueis</ui:define>
+       <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">CRUD de Condominios</ui:define>
         <ui:define name="conteudo">
-            <h:form prependId="false">
+            <h:form id="formListagem" prependId="false">
                 <p:growl/>
                 <p:commandButton value="Novo"
                                  action="#{controleAluguel.novo()}"
-                                 ajax="false" icon="pi pi-plus"/>
-                <p:dataTable value="#{controleAluguel.dao.listaObjetos}" var="obj">
-                    <p:column headerText="ID">
+                                 icon="pi pi-plus"
+                                 process="@form" update="formEdicao"
+                                 oncomplete="PF('dlg').show();"/>
+                <p:defaultCommand target="btnFiltrar" />
+                <div align="center">
+                    <p:panelGrid columns="11">
+                        <p:outputLabel value="Ordem:"/>
+                        <p:selectOneMenu value="#{controleAluguel.dao.ordem}">
+                            <f:selectItem itemLabel="ID" itemValue="id"/>
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <p:ajax update="listagem"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Filtro: "/>
+                        <p:inputText value="#{controleAluguel.dao.filtro}" size="20">
+                            <p:ajax update="listagem" event="blur"/>
+                        </p:inputText>
+                        <p:commandButton value="Filtrar" update="listagem"
+                                         process="@form" id="btnFiltrar"/>
+                        <p:outputLabel value="Máximo de objetos"/>
+                        <p:inputNumber value="#{controleAluguel.dao.maximoObjetos}"
+                                       size="3" thousandSeparator=""
+                                       decimalSeparator="" decimalPlaces="0">
+                            <p:ajax event="blur" update="listagem"/>
+                        </p:inputNumber>
+                        <p:commandButton action="#{controleAluguel.dao.primeiro()}"
+                                         title="Primeiro" icon="pi pi-step-backward"
+                                         update="listagem"/>
+                        <p:commandButton action="#{controleAluguel.dao.anterior()}"
+                                         title="Anterior" icon="pi pi-chevron-left"
+                                         update="listagem"/>   
+                        <p:commandButton action="#{controleAluguel.dao.proximo()}"
+                                         title="Próximo" icon="pi pi-chevron-right"
+                                         update="listagem"/>   
+                        <p:commandButton action="#{controleAluguel.dao.ultimo()}"
+                                         title="Último" icon="pi pi-step-forward"
+                                         update="listagem"/>                        
+                    </p:panelGrid>
+                </div>
+                <p:dataTable value="#{controleAluguel.dao.listaObjetos}" var="obj"
+                             id="listagem">
+                    <f:facet name="footer">
+                        <p:outputLabel value="#{controleAluguel.dao.mensagemNavegacao}"/>
+                    </f:facet>
+                  <p:column headerText="ID">
                         <p:outputLabel value="#{obj.id}"/>
                     </p:column>
                     <p:column headerText="Valor">
@@ -40,12 +81,14 @@
                     </p:column>   
                      <p:column headerText="locatorio">
                         <p:outputLabel value="#{obj.locatorio.localTrabalho}"/>
-                    </p:column>   
+                    </p:column>              
                     <p:column headerText="Ações">
                         <div align="center">
                             <p:commandButton action="#{controleAluguel.editar(obj.id)}"
-                                             icon="pi pi-pencil" ajax="false"
-                                             title="Editar"/>
+                                             icon="pi pi-pencil"
+                                             title="Editar"
+                                             process="@form" update="formEdicao"
+                                             oncomplete="PF('dlg').show();"/>
                             <p:commandButton action="#{controleAluguel.remover(obj.id)}"
                                              icon="pi pi-trash"
                                              title="Remover"
@@ -55,7 +98,15 @@
                     </p:column>
                 </p:dataTable>
              </h:form>
+            <ui:include src="formulario.xhtml"/>
         </ui:define>
     </ui:composition>
+    
+    
+    
+    
 </html>
 
+
+                    
+                    
