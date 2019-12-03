@@ -11,11 +11,11 @@
     </h:head>
     <h:body>
         <h:form id="formMenu" prependId="false">
-            <p:megaMenu>
+             <p:megaMenu>
                 <p:menuitem value="Início"
                             url="#{facesContext.externalContext.requestContextPath}/index.xhtml"
                             icon="pi pi-home"/>
-                <p:submenu label="Cadastros">
+                <p:submenu label="Cadastros" rendered="#{controleLogin.usuarioLogado != null}">
                     <p:column>
                         <p:submenu label="Trabalho">
                             <p:menuitem action="#{controleLocatorio.listar()}"
@@ -41,7 +41,21 @@
                                         ajax="false"/>
                         </p:submenu>
                     </p:column>
-                </p:submenu>                
+                </p:submenu>   
+                <p:submenu label="Usuário">
+                    <p:column>
+                        <p:submenu label="Ações">
+                            <p:menuitem value="#{controleLogin.usuarioLogado.nomeUsuario} : Sair do sistema"
+                                        rendered="#{controleLogin.usuarioLogado != null}"
+                                        ajax="false" icon="pi pi-power-off"
+                                        action="#{controleLogin.logout()}"/>
+                            <p:menuitem value="Entrar no sistema"
+                                        rendered="#{controleLogin.usuarioLogado == null}"
+                                        ajax="false" icon="pi pi-user"
+                                        action="#{controleLogin.irPaginaLogin()}"/>
+                        </p:submenu>
+                    </p:column>
+                </p:submenu>
             </p:megaMenu>
         </h:form>
         <ui:insert name="conteudo">
